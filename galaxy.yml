@@ -1,0 +1,16 @@
+namespace: "totaldebug"
+name: "ansible-module-hassio"
+version: "2.0.0"
+readme: ".github/README.md"
+authors:
+    - "Steven Marks (https://totaldebug.uk)"
+description: A Hassio module for utilising the HA CLI via Ansible
+license:
+    - "MIT"
+tags:
+    - hassio
+    - ha
+    - home
+    - assistant
+    - cli
+repository: "https://www.github.com/totaldebug/ansible-module-hassio"

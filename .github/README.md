@@ -1,4 +1,4 @@
-<h4 align="center">An Ansible module for executing HA CLI Commands.</h4>
+<h4 align="center">An Ansible collection containing modules for executing HA CLI Commands.</h4>
 
 <p align="center">
     <a href="https://github.com/totaldebug/ansible-module-hassio/commits/master">
@@ -31,7 +31,7 @@
 <tr>
 <td>
 
-**ansible-module-hassio** is a **high-quality** _Ansible Module_ that executes **HA CLI** commands on your hassio ansible clients.
+**ansible-module-hassio** is a **high-quality** _Ansible Collection Module_ that executes **HA CLI** commands on your hassio ansible clients.
 
 Hass.io is an operating system that will take care of installing and updating Home Assistant, is managed from the Home Assistant UI, allows creating/restoring snapshots of your configuration and can easily be extended using Hass.io add-ons including Google Assistant and Let’s Encrypt.
 
@@ -51,7 +51,7 @@ Hass.io is an operating system that will take care of installing and updating Ho
 
 ### Install
 
-Clone this repository into a `library` subfolder, within an ansible playbook
+Include this collection as a requirement with your playbook.
 
 ### Usage
 
