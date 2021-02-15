@@ -53,18 +53,22 @@ Hass.io is an operating system that will take care of installing and updating Ho
 
 Include this collection as a requirement with your playbook.
 
+```
+ansible-galaxy collection install totaldebug.hassio_cli
+```
+
 ### Usage
 
 ### Addon Examples
 
 ```yaml
 # Install Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: present
     name: core_samba
 
 # Uninstall DHCP server and Grafana addons
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: absent
     name: {{ item }}
   with_items:
@@ -72,17 +76,17 @@ Include this collection as a requirement with your playbook.
     - core_dhcp_server
 
 # Start Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: started
     addon: core_samba
 
 # Stop Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: stopped
     name: core_samba
 
 # Update Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: updated
     name: core_samba
 ```
@@ -91,11 +95,11 @@ Include this collection as a requirement with your playbook.
 
 ```yaml
 # Reboot HassIO OS
-- hassio_host:
+- totaldebug.hassio_cli.hassio_host:
     state: rebooted
 
 # Update HassIO OS
-- hassio_host:
+- totaldebug.hassio_cli.hassio_host:
     state: updated
 ```
 
@@ -103,22 +107,22 @@ Include this collection as a requirement with your playbook.
 
 ```yaml
 # Create snapshot with name snap-10-01-2021
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: new
     name: "snap-10-01-2021"
 
 # Remove snapshot with name snap-10-01-2021
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: remove
     name: "snap-10-01-2021"
 
 # Restore snapshot with name snap-10-01-2021
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: restore
     name: "snap-10-01-2021"
 
 # Reload the files on disk to check for new or removed snapshots
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: reload
 ```
 
