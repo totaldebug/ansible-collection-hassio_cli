@@ -1,16 +1,18 @@
+---
+
 namespace: "totaldebug"
 name: "hassio_cli"
 version: 2.0.0
 readme: "README.md"
 authors:
-    - "Steven Marks (https://totaldebug.uk)"
+  - "Steven Marks (https://totaldebug.uk)"
 description: A Hassio module for utilising the HA CLI via Ansible
 license:
-    - "MIT"
+  - "MIT"
 tags:
-    - hassio
-    - ha
-    - home
-    - assistant
-    - cli
+  - hassio
+  - ha
+  - home
+  - assistant
+  - cli
 repository: "https://www.github.com/totaldebug/ansible-module-hassio"
