@@ -79,5 +79,5 @@ jobs:
       - name: Injecting a dynamic Collection version
         uses: artis3n/ansible_galaxy_collection@v2
         with:
-          galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
+          api_key: ${{ secrets.GALAXY_API_KEY }}
           galaxy_version: ${GITHUB_REF/refs\/tags\//}
