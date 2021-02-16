@@ -76,10 +76,8 @@ jobs:
           prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      - name: Get the version from the tag
-        run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF/refs\/tags\//}
       - name: Injecting a dynamic Collection version
         uses: artis3n/ansible_galaxy_collection@v2
         with:
           galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
-          galaxy_version: ${{ env.RELEASE_VERSION }}
+          galaxy_version: ${GITHUB_REF/refs\/tags\//}
