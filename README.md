@@ -1,4 +1,4 @@
-<h4 align="center">An Ansible module for executing HA CLI Commands.</h4>
+<h4 align="center">An Ansible collection containing modules for executing HA CLI Commands.</h4>
 
 <p align="center">
     <a href="https://github.com/totaldebug/ansible-module-hassio/commits/master">
@@ -31,7 +31,7 @@
 <tr>
 <td>
 
-**ansible-module-hassio** is a **high-quality** _Ansible Module_ that executes **HA CLI** commands on your hassio ansible clients.
+**ansible-module-hassio** is a **high-quality** _Ansible Collection Module_ that executes **HA CLI** commands on your hassio ansible clients.
 
 Hass.io is an operating system that will take care of installing and updating Home Assistant, is managed from the Home Assistant UI, allows creating/restoring snapshots of your configuration and can easily be extended using Hass.io add-ons including Google Assistant and Let’s Encrypt.
 
@@ -51,7 +51,11 @@ Hass.io is an operating system that will take care of installing and updating Ho
 
 ### Install
 
-Clone this repository into a `library` subfolder, within an ansible playbook
+Include this collection as a requirement with your playbook.
+
+```
+ansible-galaxy collection install totaldebug.hassio_cli
+```
 
 ### Usage
 
@@ -59,12 +63,12 @@ Clone this repository into a `library` subfolder, within an ansible playbook
 
 ```yaml
 # Install Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: present
     name: core_samba
 
 # Uninstall DHCP server and Grafana addons
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: absent
     name: {{ item }}
   with_items:
@@ -72,17 +76,17 @@ Clone this repository into a `library` subfolder, within an ansible playbook
     - core_dhcp_server
 
 # Start Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: started
     addon: core_samba
 
 # Stop Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: stopped
     name: core_samba
 
 # Update Samba share addon
-- hassio_addon:
+- totaldebug.hassio_cli.hassio_addon:
     state: updated
     name: core_samba
 ```
@@ -91,11 +95,11 @@ Clone this repository into a `library` subfolder, within an ansible playbook
 
 ```yaml
 # Reboot HassIO OS
-- hassio_host:
+- totaldebug.hassio_cli.hassio_host:
     state: rebooted
 
 # Update HassIO OS
-- hassio_host:
+- totaldebug.hassio_cli.hassio_host:
     state: updated
 ```
 
@@ -103,22 +107,22 @@ Clone this repository into a `library` subfolder, within an ansible playbook
 
 ```yaml
 # Create snapshot with name snap-10-01-2021
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: new
     name: "snap-10-01-2021"
 
 # Remove snapshot with name snap-10-01-2021
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: remove
     name: "snap-10-01-2021"
 
 # Restore snapshot with name snap-10-01-2021
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: restore
     name: "snap-10-01-2021"
 
 # Reload the files on disk to check for new or removed snapshots
-- hassio_snapshot:
+- totaldebug.hassio_cli.hassio_snapshot:
     state: reload
 ```
 
