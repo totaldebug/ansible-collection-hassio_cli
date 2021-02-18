@@ -71,7 +71,10 @@ def absent(filename, repo):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["present", "absent"],),
+            state=dict(
+                required=True,
+                choices=["present", "absent"],
+            ),
             repo=dict(required=True),
             src=dict(required=True, default="/usr/share/hassio/config.json"),
         ),
