@@ -46,6 +46,7 @@ Hass.io is an operating system that will take care of installing and updating Ho
 | Manage Hassio addons       |         ✔️         |
 | Manage Hassio Host         |         ✔️         |
 | Manage Hassio Snapshots    |         ✔️         |
+| Add / Remove Addon Repos   |         ✔️         |
 
 ## Configuration
 
@@ -72,8 +73,8 @@ ansible-galaxy collection install totaldebug.hassio_cli
     state: absent
     name: {{ item }}
   with_items:
-    - grafana
     - core_dhcp_server
+    - core_mosquitto
 
 # Start Samba share addon
 - totaldebug.hassio_cli.hassio_addon:
@@ -124,6 +125,22 @@ ansible-galaxy collection install totaldebug.hassio_cli
 # Reload the files on disk to check for new or removed snapshots
 - totaldebug.hassio_cli.hassio_snapshot:
     state: reload
+```
+
+### Addon Repos Examples
+
+```yaml
+# Addrepo to config
+- totaldebug.hassio_cli.hassio_addon_repos:
+    state: present
+    repo: "https://github.com/helto4real/hassio-add-ons"
+
+# Remove repo from config
+- totaldebug.hassio_cli.hassio_snapshot:
+    state: absent
+    repo: "https://github.com/helto4real/hassio-add-ons"
+    src: "/usr/share/hassio/config.json"
+
 ```
 
 ## Contributing

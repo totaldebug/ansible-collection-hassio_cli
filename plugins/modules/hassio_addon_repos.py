@@ -68,10 +68,6 @@ def absent(filename, repo):
             write_json(data, filename)
 
 
-def __raise(ex):
-    raise ex
-
-
 def main():
     module = AnsibleModule(
         argument_spec=dict(
