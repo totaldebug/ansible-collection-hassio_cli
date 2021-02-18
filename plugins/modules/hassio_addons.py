@@ -5,18 +5,12 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-ANSIBLE_METADATA = {
-    "metadata_version": "1.0",
-    "status": ["preview"],
-    "supported_by": "community",
-}
-
 DOCUMENTATION = """
 ---
 module: hassio_addons
 author: "marksie1988 / TotalDebug (@marksie1988)"
 short_description: Manage Home Assistant (HassIO) addons
-version_added: "1.0"
+version_added: "2.0.1"
 description:
   - Manage Home Assistant (HassIO, hass.io) addons - install, uninstall, start, stop, update addons
 options:
