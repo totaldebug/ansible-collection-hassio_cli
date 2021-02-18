@@ -76,7 +76,7 @@ def main():
                 choices=["present", "absent"],
             ),
             repo=dict(required=True),
-            src=dict(required=True, default="/usr/share/hassio/config.json"),
+            src=dict(default="/usr/share/hassio/config.json"),
         ),
         supports_check_mode=False,
     )
