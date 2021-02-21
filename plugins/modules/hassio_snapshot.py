@@ -76,18 +76,23 @@ def __raise(ex):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["new", "remove", "restore", "reload"])
+            name=dict(),
+            state=dict(
+                required=True,
+                choices=["new", "remove", "restore", "reload"],
+            ),
         ),
         # TODO
         supports_check_mode=False,
     )
 
     switch = {"new": new, "remove": remove, "restore": restore, "reload": reload}
+    name = module.params["name"]
     state = module.params["state"]
 
     try:
         action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-        result = action(module)
+        result = action(module, name)
         module.exit_json(msg=result)
     except Exception as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())

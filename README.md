@@ -59,9 +59,17 @@ ansible-galaxy collection install totaldebug.hassio_cli
 ```
 
 ### Usage
+#### hassio_addons
 
-### Addon Examples
+| Option          | Required | Description |
+| --------------- | :------: | :---------: |
+| name (alias: addon) | True | The name of the addon |
+| state | True | The state of the addon ["present", "absent", "started", "stopped", "updated"] |
 
+<details>
+  <summary>Examples</summary>
+
+<!--START_SECTION:hassio_addons-->
 ```yaml
 # Install Samba share addon
 - totaldebug.hassio_cli.hassio_addon:
@@ -91,9 +99,20 @@ ansible-galaxy collection install totaldebug.hassio_cli
     state: updated
     name: core_samba
 ```
+<!--END_SECTION:hassio_addons-->
 
-### Host Examples
+</details>
 
+#### hassio_host
+
+| Option          | Required | Description |
+| --------------- | :------: | :---------: |
+| state | True | ["rebooted", "updated", "shutdown"] |
+
+<details>
+  <summary>Examples</summary>
+
+<!--START_SECTION:hassio_host-->
 ```yaml
 # Reboot HassIO OS
 - totaldebug.hassio_cli.hassio_host:
@@ -103,9 +122,20 @@ ansible-galaxy collection install totaldebug.hassio_cli
 - totaldebug.hassio_cli.hassio_host:
     state: updated
 ```
+<!--END_SECTION:hassio_host-->
 
-### Snapshot Examples
 
+#### hassio_snapshot
+
+| Option          | Required | Description |
+| --------------- | :------: | :---------: |
+| name | False | The name of the snapshot |
+| state | True | ["new", "remove", "restore", "reload"] |
+
+<details>
+  <summary>Examples</summary>
+
+<!--START_SECTION:hassio_snapshot-->
 ```yaml
 # Create snapshot with name snap-10-01-2021
 - totaldebug.hassio_cli.hassio_snapshot:
@@ -126,9 +156,20 @@ ansible-galaxy collection install totaldebug.hassio_cli
 - totaldebug.hassio_cli.hassio_snapshot:
     state: reload
 ```
+<!--END_SECTION:hassio_snapshot-->
 
-### Addon Repos Examples
+#### hassio_addon_repos
 
+| Option          | Required | Description |
+| --------------- | :------: | :---------: |
+| name (alias: repo) | True | The URL of the repo to be added |
+| state | True | ["present", "absent"] |
+| src | False | File where config is stored, Default: `/usr/share/hassio/config.json` |
+
+<details>
+  <summary>Examples</summary>
+
+<!--START_SECTION:hassio_addon_repos-->
 ```yaml
 # Addrepo to config
 - totaldebug.hassio_cli.hassio_addon_repos:
@@ -142,6 +183,7 @@ ansible-galaxy collection install totaldebug.hassio_cli
     src: "/usr/share/hassio/config.json"
 
 ```
+<!--END_SECTION:hassio_addon_repos-->
 
 ## Contributing
 

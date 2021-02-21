@@ -50,43 +50,64 @@ def write_json(data, filename):
         json.dump(data, f, indent=4)
 
 
-def present(filename, repo):
-    with open() as json_file:
+def add_repo(repo, filename):
+    with open(filename, "r+") as json_file:
         data = json.load(json_file)
         temp = data[data_point]
         if repo not in temp:
             temp.append(repo)
             write_json(data, filename)
+            return True, "{} Added.".format(repo)
+        return False, "{} Already exists.".format(repo)
 
 
-def absent(filename, repo):
-    with open() as json_file:
+def remove_repo(repo, filename):
+    with open(filename, "r+") as json_file:
         data = json.load(json_file)
         temp = data[data_point]
         if repo in temp:
             temp.remove(repo)
             write_json(data, filename)
+            return True, "{} Removed.".format(repo)
+        return False, "{} doesn't exist.".format(repo)
+
+
+def __raise(ex):
+    raise ex
 
 
 def main():
     module = AnsibleModule(
         argument_spec=dict(
+            name=dict(
+                required=True,
+                aliases=["repo"],
+            ),
             state=dict(
                 required=True,
                 choices=["present", "absent"],
             ),
-            repo=dict(required=True),
-            src=dict(default="/usr/share/hassio/config.json"),
+            src=dict(
+                default="/usr/share/hassio/config.json",
+            ),
         ),
         supports_check_mode=False,
     )
-    state = module.params["state"]
-    repo = module.params["repo"]
+    choice_map = {
+        "present": add_repo,
+        "absent": remove_repo,
+    }
+
+    name = module.params["name"]
     src = module.params["src"]
+    state = module.params["state"]
 
     try:
-        message = state(src, repo)
-        module.exit_json(msg=message)
+        action = choice_map.get(
+            state, lambda: __raise(Exception("Action is undefined"))
+        )
+        result = action(name, src)
+        module.exit_json(changed=result[0], msg=result[1])
     except Exception as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
