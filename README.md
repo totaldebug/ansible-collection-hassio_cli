@@ -77,7 +77,7 @@ ansible-galaxy collection install totaldebug.hassio_cli
     name: core_samba
 
 # Uninstall DHCP server and Grafana addons
-- totaldebug.hassio_cli.hassio_addon:
+- totaldebug.hassio_cli.hassio_addons:
     state: absent
     name: {{ item }}
   with_items:
@@ -85,17 +85,17 @@ ansible-galaxy collection install totaldebug.hassio_cli
     - core_mosquitto
 
 # Start Samba share addon
-- totaldebug.hassio_cli.hassio_addon:
+- totaldebug.hassio_cli.hassio_addons:
     state: started
     addon: core_samba
 
 # Stop Samba share addon
-- totaldebug.hassio_cli.hassio_addon:
+- totaldebug.hassio_cli.hassio_addons:
     state: stopped
     name: core_samba
 
 # Update Samba share addon
-- totaldebug.hassio_cli.hassio_addon:
+- totaldebug.hassio_cli.hassio_addons:
     state: updated
     name: core_samba
 ```
