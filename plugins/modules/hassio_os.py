@@ -25,6 +25,7 @@ EXAMPLES = """
 # Update HassIO OS
 - hassio_host:
     state: update
+    token: <SUPERVISOR_TOKEN>
 """
 
 # ===========================================
@@ -42,8 +43,8 @@ host = "os"
 def join(*args):
     return " ".join(list(args))
 
-def update(ansible):
-    cmd = join(hassio, host, "update")
+def update(ansible, token):
+    cmd = join(hassio, host, "update", "--api-token", token)
     return ansible.run_command(cmd)
 
 def __raise(ex):
@@ -53,7 +54,8 @@ def __raise(ex):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["updated"])
+            state=dict(required=True, choices=["updated"]),
+            token=dict(required=True)
         ),
         # TODO
         supports_check_mode=False,
@@ -61,10 +63,12 @@ def main():
 
     switch = {"updated": update}
     state = module.params["state"]
+    token = module.params["token"]
+
 
     try:
         action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-        result = action(module)
+        result = action(module, token)
         module.exit_json(msg=result)
     except Exception as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())

@@ -36,36 +36,39 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
 hassio = "ha"
-host = "ha"
-
+host = "core"
 
 def join(*args):
     return " ".join(list(args))
 
 
-def restart(ansible):
-    cmd = join(hassio, host, "restart")
+def execute_core(ansible, action, token):
+    cmd = join(hassio, host, action, "--api-token", token)
     return ansible.run_command(cmd)
 
+def start(ansible, token):
+    return execute_core(ansible, "start", token)
 
-def update(ansible):
-    cmd = join(hassio, host, "update")
-    return ansible.run_command(cmd)
+def restart(ansible, token):
+    return execute_core(ansible, "restart", token)
 
 
-def stop(ansible):
-    cmd = join(hassio, host, "stop")
-    return ansible.run_command(cmd)
+def stop(ansible, token):
+    return execute_core(ansible, "stop", token)
+
+
+def update(ansible, token):
+    return execute_core(ansible, "update", token)
 
 
 def __raise(ex):
     raise ex
 
-
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["restarted", "updated", "stop"])
+            state=dict(required=True, choices=["restarted", "updated", "stopped", "started"]),
+            token=dict(required=True)
         ),
         # TODO
         supports_check_mode=False,
@@ -73,14 +76,26 @@ def main():
 
     switch = {"restarted": restart, "stop": stop, "updated": update}
     state = module.params["state"]
+    token = module.params["token"]
 
     try:
         action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-        result = action(module)
-        module.exit_json(msg=result)
+        message = action(module, token)
+
+        result = dict()
+
+        if message[0] == 1:
+            result["failed"] = True
+            result["msg"] = message
+            module.fail_json(**result)
+
+        if message[0] == 0:
+            result["changed"] = True
+            result["msg"] = message
+            module.exit_json(**result)
+
     except Exception as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
-
 
 if __name__ == "__main__":
     main()
