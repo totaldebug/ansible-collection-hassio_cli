@@ -128,7 +128,7 @@ def main():
         action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
         message = action(module, name)
 
-        result = dict()
+        result = {}
 
         if message[0] == 1:
             result["failed"] = True

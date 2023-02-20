@@ -41,6 +41,8 @@ import traceback
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 import json
+import os
+import hashlib
 
 data_point = "addons_custom_list"
 
@@ -49,27 +51,39 @@ def write_json(data, filename):
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 
+def get_hash_from_repository(name):
+    """Generate a hash from repository."""
+    key = name.lower().encode()
+    return hashlib.sha1(key).hexdigest()[:8]
 
-def add_repo(repo, filename):
+def add_repo(repo, dir):
+    filename = f"{dir}/config.json"
+    path = os.path.join(dir, "/addons/git", get_hash_from_repository(repo))
+    DockerPath = os.path.join("/data/addons/git", get_hash_from_repository(repo))
+    os.system(
+        f'docker exec hassio_supervisor bash -c "mkdir {DockerPath}; cd {DockerPath}; git clone {repo}.git ."'
+    )
     with open(filename, "r+") as json_file:
         data = json.load(json_file)
         temp = data[data_point]
         if repo not in temp:
             temp.append(repo)
             write_json(data, filename)
-            return True, "{} Added.".format(repo)
-        return False, "{} Already exists.".format(repo)
+            return True, f"{path} - {repo} Added."
+        return False, f"{path} - {repo} Already exists."
 
 
-def remove_repo(repo, filename):
+def remove_repo(repo, dir):
+    filename = f"{dir}/config.json"
+    path = os.path.join(dir, get_hash_from_repository(repo))
     with open(filename, "r+") as json_file:
         data = json.load(json_file)
         temp = data[data_point]
         if repo in temp:
             temp.remove(repo)
             write_json(data, filename)
-            return True, "{} Removed.".format(repo)
-        return False, "{} doesn't exist.".format(repo)
+            return True, f"{repo} Removed."
+        return False, f"{repo} doesn't exist."
 
 
 def __raise(ex):
@@ -88,7 +102,7 @@ def main():
                 choices=["present", "absent"],
             ),
             src=dict(
-                default="/usr/share/hassio/config.json",
+                default="/usr/share/hassio/",
             ),
         ),
         supports_check_mode=False,

@@ -1,0 +1,56 @@
+---
+name: Pull Requests
+
+on:
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: "0 4 * * 0"
+  workflow_dispatch:
+jobs:
+  yaml_lint:
+    if: github.event_name  == 'pull_request'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Getting your configuration from GitHub
+        uses: actions/checkout@v1
+      - name: Running YAMLlint
+        uses: "docker://pipelinecomponents/yamllint:latest"
+        with:
+          args: yamllint .
+  remark_lint:
+    if: github.event_name  == 'pull_request'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Getting your configuration from GitHub
+        uses: actions/checkout@v1
+      - name: Running Remark lint
+        uses: "docker://pipelinecomponents/remark-lint:latest"
+        continue-on-error: true
+        with:
+          args: "remark --no-stdout --color --frail --use preset-lint-recommended ."
+  ansible_lint:
+    if: github.event_name  == 'pull_request'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Getting your configuration from GitHub
+        uses: actions/checkout@v2
+      - name: Lint Ansible Role
+        # replace "master" with any valid ref
+        uses: ansible/ansible-lint-action@master
+  black:
+    if: github.event_name  == 'pull_request'
+
+    name: Check Py formatting with Black
+    runs-on: ubuntu-latest
+    steps:
+      - name: Getting your configuration from GitHub
+        uses: actions/checkout@v1
+      - name: Running Black Check
+        uses: lgeiger/black-action@master
+        with:
+          args: ". --check"
