@@ -1,5 +1,4 @@
 ---
-
 namespace: "totaldebug"
 name: "hassio_cli"
 version: 3.1.0
@@ -15,4 +14,6 @@ tags:
   - home
   - assistant
   - cli
-repository: "https://www.github.com/totaldebug/ansible-module-hassio"
+repository: "https://github.com/totaldebug/ansible-collection-hassio_cli"
+homepage: https://totaldebug.uk
+issues: https://github.com/totaldebug/ansible-collection-hassio_cli/issues

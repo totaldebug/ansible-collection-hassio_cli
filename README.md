@@ -46,6 +46,7 @@ Hass.io is an operating system that will take care of installing and updating Ho
 | Manage Hassio addons       |         ✔️         |
 | Manage Hassio Host         |         ✔️         |
 | Manage Hassio Snapshots    |         ✔️         |
+| Manage Hassio DNS          |         ✔️         |
 | Add / Remove Addon Repos   |         ✔️         |
 
 ## Configuration
@@ -54,11 +55,12 @@ Hass.io is an operating system that will take care of installing and updating Ho
 
 Include this collection as a requirement with your playbook.
 
-```
+```shell
 ansible-galaxy collection install totaldebug.hassio_cli
 ```
 
 ### Usage
+
 #### hassio_addons
 
 | Option          | Required | Description |
