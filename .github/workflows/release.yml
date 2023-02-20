@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Lint Ansible Role
         # replace "master" with any valid ref
-        uses: ansible/ansible-lint-action@master
+        uses: ansible/ansible-lint-action@main
   black:
     name: Check Py formatting with Black
     runs-on: ubuntu-latest
