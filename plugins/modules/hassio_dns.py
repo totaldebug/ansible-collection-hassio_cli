@@ -71,7 +71,7 @@ def main():
         supports_check_mode=False,
     )
 
-    switch = {"restarted": restart, "reset": reset, "updated": update }
+    switch = {"restarted": restart, "reset": reset, "updated": update}
     state = module.params["state"]
 
     try:

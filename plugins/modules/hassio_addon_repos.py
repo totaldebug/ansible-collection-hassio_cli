@@ -51,10 +51,12 @@ def write_json(data, filename):
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
 
+
 def get_hash_from_repository(name):
     """Generate a hash from repository."""
     key = name.lower().encode()
     return hashlib.sha1(key).hexdigest()[:8]
+
 
 def add_repo(repo, dir):
     filename = f"{dir}/config.json"
