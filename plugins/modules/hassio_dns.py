@@ -7,25 +7,24 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 ---
-module: hassio_os
-author: "mjkl-gh"
-short_description: Manage Home Assistant (HassIO) host
-version_added: "3.2.0"
+module: hassio_dns
+author: "marksie1988 / TotalDebug (@marksie1988)"
+short_description: Manage Home Assistant (HassIO) dns
+version_added: "2.0.1"
 description:
-  - Manage Home Assistant (HassIO, hass.io) OS - update
+  - Manage Home Assistant (HassIO, hass.io) dns - restarted, reset, updated
 options:
   state:
     description:
-      - State of OS
+      - State of dns
     required: true
-    choices: ['updated']
+    choices: ['restarted', 'reset', 'updated']
 """
 
 EXAMPLES = """
-# Update HassIO OS
-- hassio_os:
-    state: updated
-    token: <SUPERVISOR_TOKEN>
+# Reboot HassIO OS
+- hassio_dns:
+    state: restarted
 """
 
 # ===========================================
@@ -37,15 +36,25 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
 hassio = "ha"
-host = "os"
+host = "dns"
 
 
 def join(*args):
     return " ".join(list(args))
 
 
-def update(ansible, token):
-    cmd = join(hassio, host, "update", "--api-token", token)
+def restart(ansible):
+    cmd = join(hassio, host, "restart")
+    return ansible.run_command(cmd)
+
+
+def reset(ansible):
+    cmd = join(hassio, host, "reset")
+    return ansible.run_command(cmd)
+
+
+def update(ansible):
+    cmd = join(hassio, host, "update")
     return ansible.run_command(cmd)
 
 
@@ -56,19 +65,18 @@ def __raise(ex):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["updated"]), token=dict(required=True)
+            state=dict(required=True, choices=["restarted", "reset", "updated"])
         ),
         # TODO
         supports_check_mode=False,
     )
 
-    switch = {"updated": update}
+    switch = {"restarted": restart, "reset": reset, "updated": update}
     state = module.params["state"]
-    token = module.params["token"]
 
     try:
         action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-        result = action(module, token)
+        result = action(module)
         module.exit_json(msg=result)
     except Exception as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())

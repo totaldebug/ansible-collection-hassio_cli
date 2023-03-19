@@ -12,7 +12,7 @@ author: "marksie1988 / TotalDebug (@marksie1988)"
 short_description: Manage Home Assistant (HassIO) snapshot
 version_added: "2.0.1"
 description:
-  - Manage Home Assistant (HassIO, hass.io) snaposhot - reboot, update, shutdown
+  - Manage Home Assistant (HassIO, hass.io) snapshot - reboot, update, shutdown
 options:
   state:
     description:
@@ -40,7 +40,7 @@ snap = "snap"
 
 
 def with_name(name):
-    return "-name {}".format(name)
+    return f"-name {name}"
 
 
 def join(*args):
@@ -76,13 +76,12 @@ def __raise(ex):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            name=dict(),
+            name={},
             state=dict(
                 required=True,
                 choices=["new", "remove", "restore", "reload"],
             ),
         ),
-        # TODO
         supports_check_mode=False,
     )
 

@@ -39,6 +39,7 @@ from ansible.module_utils._text import to_native
 hassio = "ha"
 host = "core"
 
+
 def join(*args):
     return " ".join(list(args))
 
@@ -47,8 +48,10 @@ def execute_core(ansible, action, token):
     cmd = join(hassio, host, action, "--api-token", token)
     return ansible.run_command(cmd)
 
+
 def start(ansible, token):
     return execute_core(ansible, "start", token)
+
 
 def restart(ansible, token):
     return execute_core(ansible, "restart", token)
@@ -65,11 +68,14 @@ def update(ansible, token):
 def __raise(ex):
     raise ex
 
+
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["restarted", "updated", "stopped", "started"]),
-            token=dict(required=True)
+            state=dict(
+                required=True, choices=["restarted", "updated", "stopped", "started"]
+            ),
+            token=dict(required=True),
         ),
         # TODO
         supports_check_mode=False,
@@ -97,6 +103,7 @@ def main():
 
     except Exception as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+
 
 if __name__ == "__main__":
     main()
