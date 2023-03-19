@@ -81,7 +81,7 @@ def main():
         supports_check_mode=False,
     )
 
-    switch = {"restarted": restart, "stop": stop, "updated": update}
+    switch = {"restarted": restart, "stop": stop, "updated": update, "started": start}
     state = module.params["state"]
     token = module.params["token"]
 
