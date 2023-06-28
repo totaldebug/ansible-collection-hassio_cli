@@ -9,6 +9,7 @@ description: A Hassio module for utilising the HA CLI via Ansible
 license:
   - "MIT"
 tags:
+  - tools
   - hassio
   - ha
   - home
