@@ -37,26 +37,10 @@ import traceback
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
-
-def get_info(ansible, module, token=None):
-    token_argument = join("--api-token ", token) if token is not None else ""
-    cmd = join("ha ", module, " info --raw-json ", token_argument)
-    return ansible.run_command(cmd)
+from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import *
 
 hassio = "ha"
 host = "os"
-
-
-def join(*args):
-    return " ".join(list(args))
-
-def update(ansible, token):
-    cmd = join(hassio, host, "update", "--api-token", token)
-    return ansible.run_command(cmd)
-
-def __raise(ex):
-    raise ex
-
 
 def main():
     module_args = dict(

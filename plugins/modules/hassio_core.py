@@ -32,7 +32,9 @@ EXAMPLES = """
 # Module execution.
 #
 import traceback
+import json
 
+from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import *
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
@@ -45,7 +47,7 @@ def join(*args):
 
 def execute_core(ansible, action, token=None):
     token_argument = join("--api-token", token) if token is not None else ""
-    cmd = join(hassio, host, action, "--api-token", token)
+    cmd = join(hassio, host, action, token_argument)
     return ansible.run_command(cmd)
 
 def start(ansible, token):
@@ -67,39 +69,52 @@ def __raise(ex):
     raise ex
 
 def main():
-    module = AnsibleModule(
-        argument_spec=dict(
-            state=dict(
-                required=True, choices=["restarted", "updated", "stopped", "started"]
-            ),
-            token=dict(required=False),
-        ),
-        # TODO
-        supports_check_mode=False,
+    module_args = dict(
+            state=dict(type='str', required=True, choices=["restarted", "updated", "stopped", "started"]),
+            token=dict(type='bool', required=False),
+        )
+
+    ansible_module = AnsibleModule(
+        argument_spec = module_args,
+        supports_check_mode = True,
+        )
+
+    switch = {"updated": update}
+    state = ansible_module.params["state"]
+    token = ansible_module.params["token"]
+    
+    facts = json.loads(get_info(ansible_module, "os", token)[1])["data"]
+    
+    result = dict(
+        changed=facts["update_available"] is "true",
+        message='',
     )
 
+    if ansible_module.check_mode:
+        ansible_module.exit_json(**result)
+
     switch = {"restarted": restart, "stop": stop, "updated": update, "started": start}
-    state = module.params["state"]
-    token = module.params["token"]
+    state = ansible_module.params["state"]
+    token = ansible_module.params["token"]
 
     try:
         action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-        message = action(module, token)
+        message = action(ansible_module, token)
 
         result = dict()
 
         if message[0] == 1:
             result["failed"] = True
             result["msg"] = message
-            module.fail_json(**result)
+            ansible_module.fail_json(**result)
 
         if message[0] == 0:
             result["changed"] = True
             result["msg"] = message
-            module.exit_json(**result)
+            ansible_module.exit_json(**result)
 
     except Exception as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        ansible_module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
 if __name__ == "__main__":
     main()

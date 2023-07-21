@@ -129,14 +129,7 @@ os: {
 from ansible.module_utils.basic import AnsibleModule
 import json
 
-def join(*args):
-    return " ".join(list(args))
-
-def get_info(ansible, module, token=None):
-    token_argument = join("--api-token ", token) if token is not None else ""
-    cmd = join("ha ", module, " info --raw-json ", token_argument)
-    return ansible.run_command(cmd)
-
+from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import *
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
