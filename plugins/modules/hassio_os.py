@@ -64,7 +64,6 @@ def main():
     state = module.params["state"]
     token = module.params["token"]
 
-
     try:
         action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
         result = action(module, token)
