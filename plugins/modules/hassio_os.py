@@ -7,24 +7,24 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 ---
-module: hassio_host
-author: "marksie1988 / TotalDebug (@marksie1988)"
+module: hassio_os
+author: "mjkl-gh"
 short_description: Manage Home Assistant (HassIO) host
-version_added: "2.0.1"
+version_added: "3.2.0"
 description:
-  - Manage Home Assistant (HassIO, hass.io) host - update
+  - Manage Home Assistant (HassIO, hass.io) OS - update
 options:
   state:
     description:
-      - State of host
+      - State of OS
     required: true
     choices: ['updated']
 """
 
 EXAMPLES = """
 # Update HassIO OS
-- hassio_host:
-    state: update
+- hassio_os:
+    state: updated
     token: <SUPERVISOR_TOKEN>
 """
 

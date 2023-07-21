@@ -7,24 +7,25 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 ---
-module: hassio_host
-author: "marksie1988 / TotalDebug (@marksie1988)"
-short_description: Manage Home Assistant (HassIO) host
-version_added: "2.0.1"
+module: hassio_core
+author: "mjkl-gh"
+short_description: Manage Home Assistant (HassIO) core
+version_added: "3.2.0"
 description:
-  - Manage Home Assistant (HassIO, hass.io) host - restart, update, stop
+  - Manage Home Assistant (HassIO, hass.io) core - restart, update, stop
 options:
   state:
     description:
-      - State of host
+      - State of home assistant core
     required: true
-    choices: ['restarted', 'updated', 'stop']
+    choices: ['restarted', 'updated', 'stop',  "started"]
 """
 
 EXAMPLES = """
 # restart HassIO Core
-- hassio_host:
-    state: restarted
+- hassio_core:
+    state: updated
+    token: <SUPERVISOR_TOKEN>
 """
 
 # ===========================================
