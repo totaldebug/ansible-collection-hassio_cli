@@ -31,10 +31,17 @@ EXAMPLES = """
 # ===========================================
 # Module execution.
 #
+import json
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
+
+
+def get_info(ansible, module, token=None):
+    token_argument = join("--api-token ", token) if token is not None else ""
+    cmd = join("ha ", module, " info --raw-json ", token_argument)
+    return ansible.run_command(cmd)
 
 hassio = "ha"
 host = "os"
@@ -52,24 +59,37 @@ def __raise(ex):
 
 
 def main():
-    module = AnsibleModule(
-        argument_spec=dict(
-            state=dict(required=True, choices=["updated"]), token=dict(required=False)
-        ),
-        # TODO
-        supports_check_mode=False,
-    )
+    module_args = dict(
+            state=dict(type='str', required=True, choices=["updated"]),
+            token=dict(type='bool', required=False),
+        )
+
+    ansible_module = AnsibleModule(
+        argument_spec = module_args,
+        supports_check_mode = True,
+        )
 
     switch = {"updated": update}
-    state = module.params["state"]
-    token = module.params["token"]
+    state = ansible_module.params["state"]
+    token = ansible_module.params["token"]
+    
+    facts = json.loads(get_info(ansible_module, "os", token)[1])["data"]
+    
+    result = dict(
+        changed=facts["update_available"] is "true",
+        message='',
+    )
+
+    if ansible_module.check_mode:
+        ansible_module.exit_json(**result)
 
     try:
-        action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-        result = action(module, token)
-        module.exit_json(msg=result)
+        if facts["update_available"] is "true":
+            action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
+            result['message'] = action(module, token)
+        ansible_module.exit_json(**result)
     except Exception as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        ansible_module.fail_json(msg=to_native(e), exception=traceback.format_exc())
 
 
 if __name__ == "__main__":
