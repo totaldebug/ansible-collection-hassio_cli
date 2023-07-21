@@ -43,7 +43,8 @@ def join(*args):
     return " ".join(list(args))
 
 
-def execute_core(ansible, action, token):
+def execute_core(ansible, action, token=None):
+    token_argument = join("--api-token", token) if token is not None else ""
     cmd = join(hassio, host, action, "--api-token", token)
     return ansible.run_command(cmd)
 
@@ -68,8 +69,10 @@ def __raise(ex):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["restarted", "updated", "stopped", "started"]),
-            token=dict(required=True)
+            state=dict(
+                required=True, choices=["restarted", "updated", "stopped", "started"]
+            ),
+            token=dict(required=False),
         ),
         # TODO
         supports_check_mode=False,

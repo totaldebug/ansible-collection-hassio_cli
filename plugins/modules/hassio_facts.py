@@ -129,15 +129,19 @@ os: {
 from ansible.module_utils.basic import AnsibleModule
 import json
 
-def get_info(ansible, module, token):
-    cmd = "ha " + module + " info --raw-json --api-token " + token
+def join(*args):
+    return " ".join(list(args))
+
+def get_info(ansible, module, token=None):
+    token_argument = join("--api-token ", token) if token is not None else ""
+    cmd = join("ha ", module, " info --raw-json ", token_argument)
     return ansible.run_command(cmd)
 
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-            token=dict(required=True),
+            token=dict(required=False),
         )
 
     result = dict(

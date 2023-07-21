@@ -54,8 +54,7 @@ def __raise(ex):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(required=True, choices=["updated"]),
-            token=dict(required=True)
+            state=dict(required=True, choices=["updated"]), token=dict(required=False)
         ),
         # TODO
         supports_check_mode=False,
