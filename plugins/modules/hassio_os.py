@@ -60,7 +60,7 @@ def main():
     facts = json.loads(get_info(ansible_module, "os", token)[1])["data"]
     
     result = dict(
-        changed=facts["update_available"] is "true",
+        changed=True,
         message='',
     )
 

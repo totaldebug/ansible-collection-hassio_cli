@@ -86,9 +86,12 @@ def main():
     facts = json.loads(get_info(ansible_module, "os", token)[1])["data"]
     
     result = dict(
-        changed=facts["update_available"] is "true",
+        changed=True,
         message='',
     )
+
+    if state in state_and_changed:
+        result["changed"] = state_and_changed[state](facts)
 
     if ansible_module.check_mode:
         ansible_module.exit_json(**result)
