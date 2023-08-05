@@ -2,10 +2,11 @@
 
 # Copyright: (c) 2018, Terry Jones <terry.jones@example.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 __metaclass__ = type
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: hassio_core_facts
 
@@ -17,16 +18,16 @@ description: This module collects facts about the home assistant core instance r
 
 author:
     - mjkl-gh (@mjkl-gh)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 # Pass in a message
 - name: gather facts about home assistant core
   hassio_core_facts:
     token: <SUPERVISOR_TOKEN>
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 core:
     arch: 
         description: The architecture of the machine
@@ -124,27 +125,25 @@ os: {
         type: str
         returned: always
         sample: 9.5
-'''
+"""
 
 from ansible.module_utils.basic import AnsibleModule
 import json
 
 from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import *
 
+
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-            token=dict(required=False),
-        )
+        token=dict(required=False),
+    )
 
     result = dict(
         changed=False,
     )
 
-    ansible_module = AnsibleModule(
-        argument_spec=module_args,
-        supports_check_mode=True
-    )
+    ansible_module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
     facts = dict()
 
@@ -158,7 +157,6 @@ def run_module():
         if message[0] == 0:
             facts[module] = json.loads(message[1])["data"]
 
-
     result["ansible_facts"] = facts
     ansible_module.exit_json(**result)
 
@@ -167,5 +165,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
