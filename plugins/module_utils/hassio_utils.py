@@ -40,7 +40,7 @@ def restart_requires_change(facts):
     return True #A restart always changes state
 
 def update_requires_change(facts):
-    return  facts["update_available"] is "true"
+    return  facts["update_available"] is True
 
 def stop_requires_change(facts):
     return True # There is currently no (unified) way to check whether services are actually running or not
