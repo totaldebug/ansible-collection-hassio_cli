@@ -49,6 +49,7 @@ from ansible.module_utils._text import to_native
 
 module = "core"
 
+
 def main():
     switch = {
         "restarted": partial(restart, module),

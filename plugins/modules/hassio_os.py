@@ -43,7 +43,9 @@ from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils
     state_and_changed,
     __raise,
 )
+
 host = "os"
+
 
 def main():
     module_args = dict(
@@ -75,7 +77,6 @@ def main():
             ansible_module.exit_json(**result)
 
         if facts["update_available"] is True:
-
             action = switch.get(
                 state, lambda module, token: __raise(Exception("Action is undefined"))
             )
