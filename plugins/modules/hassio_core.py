@@ -33,78 +33,64 @@ EXAMPLES = """
 #
 import traceback
 import json
+from functools import partial
 
-from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import *
+from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import (
+    get_info,
+    start,
+    restart,
+    stop,
+    update,
+    state_and_changed,
+    __raise,
+)
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
-hassio = "ha"
-host = "core"
+module = "core"
 
-def join(*args):
-    return " ".join(list(args))
-
-
-def execute_core(ansible, action, token=None):
-    token_argument = join("--api-token", token) if token is not None else ""
-    cmd = join(hassio, host, action, token_argument)
-    return ansible.run_command(cmd)
-
-def start(ansible, token):
-    return execute_core(ansible, "start", token)
-
-def restart(ansible, token):
-    return execute_core(ansible, "restart", token)
-
-
-def stop(ansible, token):
-    return execute_core(ansible, "stop", token)
-
-
-def update(ansible, token):
-    return execute_core(ansible, "update", token)
-
-
-def __raise(ex):
-    raise ex
 
 def main():
+    switch = {
+        "restarted": partial(restart, module),
+        "stopped": partial(stop, module),
+        "updated": partial(update, module),
+        "started": partial(start, module),
+    }
+
     module_args = dict(
-            state=dict(type='str', required=True, choices=["restarted", "updated", "stopped", "started"]),
-            token=dict(type='bool', required=False),
-        )
-
-    ansible_module = AnsibleModule(
-        argument_spec = module_args,
-        supports_check_mode = True,
-        )
-
-    switch = {"updated": update}
-    state = ansible_module.params["state"]
-    token = ansible_module.params["token"]
-    
-    facts = json.loads(get_info(ansible_module, "os", token)[1])["data"]
-    
-    result = dict(
-        changed=True,
-        message='',
+        state=dict(type="str", required=True, choices=switch.keys()),
+        token=dict(type="bool", required=False),
     )
 
-    if state in state_and_changed:
-        result["changed"] = state_and_changed[state](facts)
+    ansible_module = AnsibleModule(
+        argument_spec=module_args,
+        supports_check_mode=True,
+    )
 
-    if ansible_module.check_mode:
-        ansible_module.exit_json(**result)
-
-    switch = {"restarted": restart, "stop": stop, "updated": update, "started": start}
     state = ansible_module.params["state"]
     token = ansible_module.params["token"]
 
     try:
-        action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-        message = action(ansible_module, token)
+        facts_json = get_info(ansible_module, module, token)[1]
+        facts = json.loads(facts_json)["data"]
 
-        result = dict()
+        result = dict(changed=False, message="", ansible_facts=facts)
+
+        if state in state_and_changed:
+            result["changed"] = state_and_changed[state](facts)
+        else:
+            __raise(Exception("Check function is undefined"))
+
+        if ansible_module.check_mode:
+            ansible_module.exit_json(**result)
+
+        if facts["update_available"] is True:
+            action = switch.get(
+                state,
+                lambda ansible_module, token: __raise(Exception("Action is undefined")),
+            )
+            message = action(ansible_module, token)
 
         if message[0] == 1:
             result["failed"] = True
@@ -118,6 +104,7 @@ def main():
 
     except Exception as e:
         ansible_module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+
 
 if __name__ == "__main__":
     main()
