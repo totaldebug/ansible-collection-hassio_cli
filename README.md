@@ -61,6 +61,8 @@ Include this collection as a requirement with your playbook.
 ansible-galaxy collection install totaldebug.hassio_cli
 ```
 
+And make sure to have an ssh addon installed. We advise [Terminal and ssh](https://github.com/home-assistant/addons) from the official addons as it provides a root user with the supervisor token as environment variable. However, since this is a root user it is strongly disadvised to use password login. Use an ssh key and configure the public key in the UI
+
 ### Usage
 
 #### hassio_addons
@@ -135,6 +137,7 @@ ansible-galaxy collection install totaldebug.hassio_cli
 | Option          | Required | Description |
 | --------------- | :------: | :---------: |
 | state | True | ["updated"] |
+| token | False | supervisor token for accessing the api |
 
 <details>
   <summary>Examples</summary>
@@ -155,6 +158,7 @@ ansible-galaxy collection install totaldebug.hassio_cli
 | Option          | Required | Description |
 | --------------- | :------: | :---------: |
 | state | True | ["restarted", "started", "stopped", "updated"] |
+| token | False | supervisor token for accessing the api |
 
 <details>
   <summary>Examples</summary>
