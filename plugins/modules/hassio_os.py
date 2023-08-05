@@ -45,7 +45,6 @@ from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils
 )
 host = "os"
 
-
 def main():
     module_args = dict(
         state=dict(type="str", required=True, choices=["updated"]),
