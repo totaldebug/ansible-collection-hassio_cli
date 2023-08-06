@@ -80,6 +80,7 @@ def main():
             action = switch.get(
                 state, lambda module, token: __raise(Exception("Action is undefined"))
             )
+            message = action(ansible_module, token)
 
             if message[0] != 0:
                 result["failed"] = True
