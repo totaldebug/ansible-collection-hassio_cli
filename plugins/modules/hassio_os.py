@@ -33,44 +33,68 @@ EXAMPLES = """
 #
 import json
 import traceback
+from functools import partial
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils._text import to_native
 
-from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import *
+from ansible_collections.totaldebug.hassio_cli.plugins.module_utils.hassio_utils import (
+    get_info,
+    update,
+    state_and_changed,
+    __raise,
+)
 
-hassio = "ha"
-host = "os"
+module = "os"
+
 
 def main():
+    switch = {
+        "updated": partial(update, module),
+    }
+
     module_args = dict(
-            state=dict(type='str', required=True, choices=["updated"]),
-            token=dict(type='bool', required=False),
-        )
-
-    ansible_module = AnsibleModule(
-        argument_spec = module_args,
-        supports_check_mode = True,
-        )
-
-    switch = {"updated": update}
-    state = ansible_module.params["state"]
-    token = ansible_module.params["token"]
-    
-    facts = json.loads(get_info(ansible_module, "os", token)[1])["data"]
-    
-    result = dict(
-        changed=True,
-        message='',
+        state=dict(type="str", required=True, choices=switch.keys()),
+        token=dict(type="bool", required=False),
     )
 
-    if ansible_module.check_mode:
-        ansible_module.exit_json(**result)
+    ansible_module = AnsibleModule(
+        argument_spec=module_args,
+        supports_check_mode=True,
+    )
+
+    state = ansible_module.params["state"]
+    token = ansible_module.params["token"]
 
     try:
-        if facts["update_available"] is "true":
-            action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
-            result['message'] = action(module, token)
+        facts_json = get_info(ansible_module, "os", token)[1]
+        facts = json.loads(facts_json)["data"]
+
+        result = dict(changed=False, message="", ansible_facts=facts)
+
+        if state in state_and_changed:
+            result["changed"] = state_and_changed[state](facts)
+        else:
+            __raise(Exception("Check function is undefined"))
+
+        if ansible_module.check_mode:
+            ansible_module.exit_json(**result)
+
+        if facts["update_available"] is True:
+            action = switch.get(
+                state, lambda module, token: __raise(Exception("Action is undefined"))
+            )
+            message = action(ansible_module, token)
+
+            if message[0] != 0:
+                result["failed"] = True
+                result["msg"] = message
+                ansible_module.fail_json(**result)
+
+            if message[0] == 0:
+                result["changed"] = True
+                result["message"] = action(ansible_module, token)
+
         ansible_module.exit_json(**result)
     except Exception as e:
         ansible_module.fail_json(msg=to_native(e), exception=traceback.format_exc())

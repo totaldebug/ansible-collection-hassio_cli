@@ -125,7 +125,9 @@ def main():
     name = module.params["name"]
 
     try:
-        action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
+        action = switch.get(
+            state, lambda module, name: __raise(Exception("Action is undefined"))
+        )
         message = action(module, name)
 
         result = {}

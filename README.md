@@ -45,6 +45,8 @@ Hass.io is an operating system that will take care of installing and updating Ho
 | -------------------------- | :----------------: |
 | Manage Hassio addons       |         ✔️         |
 | Manage Hassio Host         |         ✔️         |
+| Manage Hassio Core         |         ✔️         |
+| Manage Hassio OS           |         ✔️         |
 | Manage Hassio Snapshots    |         ✔️         |
 | Manage Hassio DNS          |         ✔️         |
 | Add / Remove Addon Repos   |         ✔️         |
@@ -58,6 +60,8 @@ Include this collection as a requirement with your playbook.
 ```shell
 ansible-galaxy collection install totaldebug.hassio_cli
 ```
+
+And make sure to have an ssh addon installed. We advise [Terminal and ssh](https://github.com/home-assistant/addons) from the official addons as it provides a root user with the supervisor token as environment variable. However, since this is a root user it is strongly disadvised to use password login. Use an ssh key and configure the public key in the UI
 
 ### Usage
 
@@ -126,6 +130,64 @@ ansible-galaxy collection install totaldebug.hassio_cli
 ```
 <!--END_SECTION:hassio_host-->
 
+</details>
+
+#### hassio_os
+
+| Option          | Required | Description |
+| --------------- | :------: | :---------: |
+| state | True | ["updated"] |
+| token | False | supervisor token for accessing the api |
+
+<details>
+  <summary>Examples</summary>
+
+<!--START_SECTION:hassio_os-->
+```yaml
+# Update the home assistant OS
+- totaldebug.hassio_cli.hassio_os:
+    state: updated
+    token: <SUPERVISOR_TOKEN>
+```
+<!--END_SECTION:hassio_os-->
+
+</details>
+
+#### hassio_core
+
+| Option          | Required | Description |
+| --------------- | :------: | :---------: |
+| state | True | ["restarted", "started", "stopped", "updated"] |
+| token | False | supervisor token for accessing the api |
+
+<details>
+  <summary>Examples</summary>
+
+<!--START_SECTION:hassio_core-->
+```yaml
+# Start Home assistant core
+- totaldebug.hassio_cli.hassio_core:
+    state: restarted
+    token: <SUPERVISOR_TOKEN>
+
+# Start Home assistant core
+- totaldebug.hassio_cli.hassio_core:
+    state: started
+    token: <SUPERVISOR_TOKEN>
+
+# Stop Home assistant core
+- totaldebug.hassio_cli.hassio_core:
+    state: stopped
+    token: <SUPERVISOR_TOKEN>
+
+# Update Home assistant core
+- totaldebug.hassio_cli.hassio_core:
+    state: updated
+    token: <SUPERVISOR_TOKEN>
+```
+<!--END_SECTION:hassio_core-->
+
+</details>
 
 #### hassio_snapshot
 
@@ -160,6 +222,8 @@ ansible-galaxy collection install totaldebug.hassio_cli
 ```
 <!--END_SECTION:hassio_snapshot-->
 
+</details>
+
 #### hassio_addon_repos
 
 | Option          | Required | Description |
@@ -186,6 +250,8 @@ ansible-galaxy collection install totaldebug.hassio_cli
 
 ```
 <!--END_SECTION:hassio_addon_repos-->
+
+</details>
 
 ## Contributing
 

@@ -120,7 +120,7 @@ def main():
 
     try:
         action = choice_map.get(
-            state, lambda: __raise(Exception("Action is undefined"))
+            state, lambda name, src: __raise(Exception("Action is undefined"))
         )
         result = action(name, src)
         module.exit_json(changed=result[0], msg=result[1])
