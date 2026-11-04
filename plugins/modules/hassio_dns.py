@@ -75,7 +75,9 @@ def main():
     state = module.params["state"]
 
     try:
-        action = switch.get(state, lambda: __raise(Exception("Action is undefined")))
+        action = switch.get(
+            state, lambda module: __raise(Exception("Action is undefined"))
+        )
         result = action(module)
         module.exit_json(msg=result)
     except Exception as e:
